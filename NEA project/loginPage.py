@@ -43,6 +43,7 @@ class Canvas(FigureCanvas):
         self.parent = parent
 
     def plot_graph(self, x, y, x_label, y_label, chart_title):
+        # plots line graphs with a single line, and the map graph with no tick labels
         self.line1 = self.ax.plot(x, y)
 
         if x_label != "":
@@ -58,6 +59,7 @@ class Canvas(FigureCanvas):
             plt.tight_layout()
 
     def plot_dual_graph(self, x1, y1, x2, y2, line1, line2, x_label, y_label, chart_title):
+        # plots a graph wih 2 lines
         self.line1 = self.ax.plot(x1, y1, label=line1)
         self.line2 = self.ax.plot(x2, y2, label=line2)
         self.ax.set(xlabel=x_label, ylabel=y_label, title=chart_title)
@@ -65,6 +67,7 @@ class Canvas(FigureCanvas):
         self.ax.legend()
 
     def plot_triple_graph(self, x, y1, y2, y3, line1, line2, line3, x_label, y_label, chart_title):
+        # plots a graph with 3 lines for progress chart
         self.ax.plot(x, y1, label=line1)
         self.ax.plot(x, y2, label=line2)
         self.ax.plot(x, y3, label=line3)
@@ -73,11 +76,13 @@ class Canvas(FigureCanvas):
         self.ax.legend()
 
     def plot_scatter(self, x, y, x_label, y_label, chart_title):
+        # plots scatter graph for power v hr
         self.ax.scatter(x, y)
         self.ax.grid()
         self.ax.set(xlabel=x_label, ylabel=y_label, title=chart_title)
 
     def plot_overlap_graph(self, longitude, latitude, time, time_interval=600):
+        # plots the compare segments graph, plots a line for each segment after making segments
         plt.tight_layout()
         plot_points = [[], [], []]
         self.parent.segments = []
@@ -138,6 +143,7 @@ class Update_profile(QtWidgets.QMainWindow):
         self.DOB_date_edit = QtWidgets.QDateEdit()
         self.DOB_date_edit.setDisplayFormat("dd/MM/yyyy")
 
+        # sets the maximum date selectable to he current date
         today_date = datetime.date.today()
         string_date = today_date.strftime("%Y-%m-%d")
         year = int(string_date[0] + string_date[1] + string_date[2] + string_date[3])
@@ -178,6 +184,7 @@ class Update_profile(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralwidget)
 
     def update_ui(self):
+        # sets all the text for line edits
         cursor = self.connection.cursor()
         cursor.execute(f"""SELECT weight, FTP, HRThreshold, dateOfBirth, surname, firstName 
                             FROM users WHERE username = '{self.username}'""")
@@ -208,6 +215,7 @@ class Update_profile(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         error = False
 
+        # makes sure the data types inputed are all correct
         try:
             weight = float(self.weight_line_edit.text())
             FTP = int(self.FTP_line_edit.text())
@@ -220,6 +228,7 @@ class Update_profile(QtWidgets.QMainWindow):
         surname = self.surname_line_edit.text()
         firstname = self.firstname_line_edit.text()
 
+        # updates the profile of the user
         if not error:
             try:
                 self.connection.execute(f"""
@@ -249,6 +258,8 @@ class Name_ride(QtWidgets.QMainWindow):
         super().__init__()
         self.resize(600, 500)
         self.centralWidget = QtWidgets.QWidget(self)
+
+        # sets the minimum and maximum date
         today_date = datetime.date.today()
         string_date = today_date.strftime("%Y-%m-%d")
         year = int(string_date[0]+string_date[1]+string_date[2]+string_date[3])
@@ -256,7 +267,6 @@ class Name_ride(QtWidgets.QMainWindow):
         day = int(string_date[8]+string_date[9])
         max_date = QtCore.QDate(year, month, day)
         min_date = QtCore.QDate(2010, 1, 1)
-
 
         self.main_window = main_window
         self.connection = connection
@@ -292,6 +302,7 @@ class Name_ride(QtWidgets.QMainWindow):
         ride_name = self.rideNameLineEdit.text()
         ride_date = self.rideDateCalender.selectedDate().toString("yyyy-MM-dd")
 
+        # updates the name and date of the ride just added, defaults to ridename and current date
         try:
             self.connection.execute(f"UPDATE userRide SET name = '{ride_name}', date = '{ride_date}' WHERE rideId = {self.rideId}")
             if not testing:
@@ -472,6 +483,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.progressRadioButton.setText(_translate("MainWindow", "Progress"))
 
     def settupScrollWindow(self):
+        # sets up the scroll window with the selectable rides and maps
         self.menuButton.setText("Menu")
         self.menu = False
 
@@ -530,12 +542,14 @@ class Main_MainWindow(QtWidgets.QMainWindow):
 
             self.frames.append([rideFrame, rideCheckBox_1, ride_id])
 
+        # button to display more rides to the user
         self.show_more_rides = QtWidgets.QPushButton(self)
         self.show_more_rides.setText("Show 5 more rides")
         self.show_more_rides.clicked.connect(lambda: self.more_rides(5))
         self.verticalLayout_3.addWidget(self.show_more_rides)
 
     def more_rides(self, num):
+        # adds more rides and sets all rides to selectable
         self.ridesShown += num
         layout = self.verticalLayout_3
         self.clear_layout(layout)
@@ -545,6 +559,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.frames_selected = []
         self.settupScrollWindow()
 
+        # if the progress radio button is checked then the check buttons must remain uncheckable
         if self.progressRadioButton.isChecked():
             if num == 0:
                 layout = self.horizontalLayout_4
@@ -557,6 +572,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                     self.ridesSelected = False
 
     def get_map(self, ride_id):
+        # produces the widget for a map
         data = self.data_from_ride_table(ride_id)
 
         # 0time, 1moving, 2distance, 3watts, 4heart rate, 5cadence, 6velocity_smooth, 7lat, 8lng, 9temp, 10alt
@@ -576,6 +592,8 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         return canvas
 
     def ride_clicked(self):
+        # when a ride is checked it sets all the others to disabled and calls ride data panel with that ride ID
+        # when a ride is unchecked it sets all the others to enabled
         if self.dataRadioButton.isChecked():
             if not self.ridesSelected:
                 for frame in self.frames:
@@ -607,8 +625,8 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                     self.frames_selected[1][0].setEnabled(True)
                     self.ride_compare_panel(self.frames_selected[0][1], self.frames_selected[1][1])
             else:
-                # if 2 rides were selected it checks which one has recently been clicked then removed it from
-                # selected list and enables the remaining check boxes
+                # if 2 rides were selected it checks which one has recently been clicked by seeing if it is enabled but not checked
+                # then removed it from selected list and enables the remaining check boxes
                 for frame in self.frames:
                     if frame[1].isEnabled() and not frame[1].isChecked():
                         unselected_frame = [frame[1], frame[2]]
@@ -618,6 +636,8 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                 for frame in self.frames:
                     frame[1].setEnabled(True)
 
+            # if a ride is still checked then the program needs to make note of one being selected
+            # if both have been deselected then is makes sure that no frames are in the selected list
             selected = False
             for frame in self.frames:
                 if frame[1].isChecked():
@@ -627,13 +647,13 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                 self.ridesSelected = False
 
     def clear_layout(self, layout):
+        # removes all the child widgets and child layouts from a layout using recursion
         if layout is not None:
             while layout.count():
                 child = layout.takeAt(0)
                 if child.widget() is not None:
                     child.widget().hide()
                 elif child.layout() is not None:
-                    "clearLayout(child.layout())"
                     self.clear_layout(child.layout())
                     child.layout().deleteLater()
 
