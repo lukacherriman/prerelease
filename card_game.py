@@ -30,7 +30,7 @@ class Card:
         return long_name
 
 
-class Deck:
+class ,0Deck:
     """ A class to contain a pack of cards with methods for shuffling, adding or removing cards etc. """
     def __init__(self):
         self._card_list = []

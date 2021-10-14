@@ -658,9 +658,11 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                     child.layout().deleteLater()
 
     def ride_data_panel(self, ride_id):
+        # sets up the page when view data check box is selected
         layout = self.horizontalLayout_4
         self.clear_layout(layout)
 
+        # sets up editable widgets
         self.chart_selecter = QtWidgets.QComboBox(self)
         self.chart_selecter.addItems(['Power & Hr vs Time', 'Power, HR Time Curve', 'HR vs Power'])
         self.chart_selecter.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -675,6 +677,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.redraw_button.setText("Redraw Graph")
         self.redraw_button.clicked.connect(lambda: self.update_data_graph(ride_id))
 
+        # sets up charts
         cursor = self.connection.cursor()
         cursor.execute(f"SELECT * FROM ride{ride_id}")
         power = []
@@ -702,6 +705,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
 
         self.horizontalLayout_4.addLayout(self.verticle_layout)
 
+        # sets up the readable data next to the charts
         self.verticle_layout2 = QtWidgets.QVBoxLayout(self)
         self.choose_graph_label = QtWidgets.QLabel(self)
         self.choose_graph_label.setText("Choose Graph")
@@ -783,12 +787,14 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.get_power_quartiles(ride_id)
 
     def ride_compare_panel(self, ride_id1, ride_id2):
+        # sets up the page when compare rides is selected
         layout = self.horizontalLayout_4
         self.clear_layout(layout)
         
         overlap_graph = Canvas(self, 10, 10)
         overlap_graph.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
+        # selectes all records from the first rides table where the lat and lng are the same
         cursor = self.connection.cursor()
         cursor.execute(f"""
                         SELECT * FROM ride{ride_id1}
@@ -808,6 +814,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.choice_combo_box.addItems(["Compare Segments", ""])
         self.verticle_layout3.addWidget(self.choice_combo_box, 0, 0)
 
+        # sets up graph where selected segments are displayed
         self.segment_graph = Canvas(self, 6, 4)
         self.segment_graph.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self.segment_graph.ax.set_yticklabels([])
@@ -820,6 +827,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
 
         self.verticle_layout3.addWidget(self.segment_graph, 1, 0)
 
+        # sets up viewable data for the two compared rides
         self.rolling_average_label = QtWidgets.QLabel(self)
         self.rolling_average_label.setText("Segment: 1")
         self.rolling_average_label.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -888,7 +896,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.horizontalLayout_4.addLayout(self.verticle_layout3)
 
     def fitness_progress_panel(self):
-
+        # sets up the page if progress radio button is selected
         today_date = datetime.date.today()
 
         cursor = self.connection.cursor()
@@ -911,6 +919,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                 new += ch
             days_difference = int(new)
 
+            # gets all the dates between the date of the first ride and the date of the last ride
             all_date_formated_list = []
             all_date_list = []
             for i in range(days_difference + 1):
@@ -920,6 +929,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                 all_date_formated_list.append(date_formated)
                 all_date_list.append(date)
 
+            # runs through all the dates, then runs through all rides for each date, if the dates are the same the TSS for that ride is added to the daily TSS
             TSS_list = []
 
             for date in all_date_formated_list:
@@ -936,6 +946,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                 else:
                     TSS_list.append(0)"""
 
+            # gets the fatigue and fitness for each day based on the TSS
             fatigue_list = []
             total = 0
             for tss in TSS_list:
@@ -955,6 +966,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                 if tss < min:
                     min = tss
 
+            # plots the 3 lines, TSS, fitness and fatigue onto a graph
             progress_graph = Canvas(self, 16, 12)
             progress_graph.plot_triple_graph(all_date_list, TSS_list, fitness_list, fatigue_list, "Training Stress Score", "Fitness Score", "Fatigue Score", "Date", "", "Progress")
             progress_graph.ax.set(ylim=min)
@@ -1031,6 +1043,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         return[first_quartile, second_quartile, third_quartile]
     
     def calc_heart_rate_variance(self, ride_id):
+        # calculates the change in heart rate for a given power compared to the first 10 minutes
         result = self.data_from_ride_table(ride_id)
         cursor = self.connection.cursor()
         cursor.execute(f"SELECT FTP FROM users WHERE username = '{self.username}'")
@@ -1214,6 +1227,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.verticle_layout.addWidget(self.data_chart, 0, 0)
         
     def draw_segment(self, ride_id1, ride_id2):
+        # draws the segment when the slider is released
         slider_value = self.average_slider.value() - 1
         compare_mode = self.choice_combo_box.currentIndex()
 
@@ -1287,6 +1301,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
             self.wkg2.setText(f"Watts/kg: {np.round(average_power_2/weight, 1)}")
 
     def menuPressed(self):
+        # changes the scroll window when menu is pressed or goes back
         layout = self.verticalLayout_3
         self.clear_layout(layout)
 
@@ -1422,6 +1437,7 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.app.exec_()
 
     def reset_panel(self):
+        # changes the page back to the plain screen
         layout = self.horizontalLayout_4
         self.clear_layout(layout)
 
@@ -1580,10 +1596,10 @@ class Signup_MainWindow(QtWidgets.QMainWindow):
         self.backToLoginButton.clicked.connect(self.backToLoginClicked)
         self.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(self)
+        self.updateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def retranslateUi(self, MainWindow):
+    def updateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.nameFirstLabel.setText(_translate("MainWindow", "First Name"))
@@ -1600,6 +1616,7 @@ class Signup_MainWindow(QtWidgets.QMainWindow):
         self.backToLoginButton.setText(_translate("MainWindow", "<- Login"))
 
     def check_user(self, username):
+        # checks if username already in use
         cursor = self.connection.cursor()
         cursor.execute(f"SELECT username FROM users WHERE username = '{username}'")
         result = cursor.fetchall()
@@ -1744,13 +1761,6 @@ class Login_MainWindow(QtWidgets.QMainWindow):
         self.enterButton.clicked.connect(self.enterClicked)
 
         self.setCentralWidget(self.centralwidget)
-        """self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 42))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)"""
 
         self.retranslateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
