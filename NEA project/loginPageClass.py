@@ -4,6 +4,7 @@ import sqlite3
 
 import signupPageClass as Signup_MainWindow
 import mainWindowClass as Main_MainWindow
+import hashingAlgorithm as hashing_algorithm
 
 
 class Login_MainWindow(QtWidgets.QMainWindow):
@@ -112,7 +113,7 @@ class Login_MainWindow(QtWidgets.QMainWindow):
 
             if result:
                 self.app = QtWidgets.QApplication(sys.argv)
-                self.ui = Main_MainWindow(connection, username)
+                self.ui = Main_MainWindow(self.connection, username)
                 self.close()
                 self.ui.show()
                 self.app.exec_()
@@ -125,7 +126,7 @@ class Login_MainWindow(QtWidgets.QMainWindow):
 
     def signUpClicked(self):
         self.app = QtWidgets.QApplication(sys.argv)
-        self.ui = Signup_MainWindow(connection)
+        self.ui = Signup_MainWindow(self.connection)
         self.close()
         self.ui.show()
         self.app.exec_()

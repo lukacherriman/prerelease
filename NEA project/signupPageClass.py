@@ -4,6 +4,7 @@ import sqlite3
 import datetime
 
 import loginPageClass as Login_MainWindow
+import hashingAlgorithm as hashing_algorithm
 
 class Signup_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, connection):
@@ -145,7 +146,7 @@ class Signup_MainWindow(QtWidgets.QMainWindow):
 
     def backToLoginClicked(self):
         self.app = QtWidgets.QApplication(sys.argv)
-        self.ui = Login_MainWindow(connection)
+        self.ui = Login_MainWindow(self.connection)
         self.close()
         self.ui.show()
         self.app.exec_()

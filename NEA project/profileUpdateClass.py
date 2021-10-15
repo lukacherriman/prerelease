@@ -4,6 +4,7 @@ import sqlite3
 import datetime
 
 import mainWindowClass as Main_MainWindow
+from constants import *
 
 
 class Update_profile(QtWidgets.QMainWindow):

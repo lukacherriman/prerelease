@@ -6,11 +6,13 @@ import datetime
 import nameRideClass as Name_ride
 import profileUpdateClass as Update_profile
 import canvasClass as Canvas
+from constants import *
 
 
 class Main_MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, connection, username):
+    def __init__(self, connection, username, testing):
         super().__init__()
+        self.testing = testing
         self.connection = connection
         self.username = username
         self.menu = False
