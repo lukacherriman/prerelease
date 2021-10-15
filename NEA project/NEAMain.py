@@ -1,17 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import sqlite3
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import datetime
 
 import loginPageClass as Login_MainWindow
-import signupPageClass as Signup_MainWindow
 import mainWindowClass as Main_MainWindow
-import nameRideClass as Name_ride
-import profileUpdateClass as Update_profile
-import canvasClass as Canvas
 
 global testing
 testing = False

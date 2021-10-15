@@ -1,3 +1,13 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+import numpy as np
+import datetime
+
+import nameRideClass as Name_ride
+import profileUpdateClass as Update_profile
+import canvasClass as Canvas
+
+
 class Main_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, connection, username):
         super().__init__()

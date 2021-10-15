@@ -1,3 +1,11 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+import sqlite3
+import datetime
+
+import mainWindowClass as Main_MainWindow
+
+
 class Name_ride(QtWidgets.QMainWindow):
     def __init__(self, main_window, connection, username, rideId):
         super().__init__()

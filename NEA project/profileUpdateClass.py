@@ -1,3 +1,11 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+import sqlite3
+import datetime
+
+import mainWindowClass as Main_MainWindow
+
+
 class Update_profile(QtWidgets.QMainWindow):
     def __init__(self, connection, username):
         super().__init__()

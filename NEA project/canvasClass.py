@@ -1,3 +1,7 @@
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
+
 class Canvas(FigureCanvas):
     def __init__(self, parent=None, width=4, height=4):
         fig, self.ax = plt.subplots(figsize=(width, height), dpi=100)

@@ -1,3 +1,11 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+import sqlite3
+
+import signupPageClass as Signup_MainWindow
+import mainWindowClass as Main_MainWindow
+
+
 class Login_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, connection):
         super().__init__()
