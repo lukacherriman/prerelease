@@ -2,9 +2,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import sqlite3
 
-import signupPageClass as Signup_MainWindow
-import mainWindowClass as Main_MainWindow
-import hashingAlgorithm as hashing_algorithm
+from signupPageClass import Signup_MainWindow
+from mainWindowClass import Main_MainWindow
+from hashingAlgorithm import hashing_algorithm
 
 
 class Login_MainWindow(QtWidgets.QMainWindow):

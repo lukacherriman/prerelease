@@ -2,8 +2,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import sqlite3
 
-import loginPageClass as Login_MainWindow
-import mainWindowClass as Main_MainWindow
+from loginPageClass import Login_MainWindow
+from mainWindowClass import Main_MainWindow
 from constants import *
 
 
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     if testing:
         username = "sussymajor"
         app = QtWidgets.QApplication(sys.argv)
-        ui = Main_MainWindow(connection, username, testing)
+        ui = Main_MainWindow(connection, username)
         ui.show()
         app.exec_()
 

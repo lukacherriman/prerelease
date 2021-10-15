@@ -3,7 +3,7 @@ import sys
 import sqlite3
 import datetime
 
-import mainWindowClass as Main_MainWindow
+from mainWindowClass import Main_MainWindow
 from constants import *
 
 

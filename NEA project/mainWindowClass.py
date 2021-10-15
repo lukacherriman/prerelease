@@ -3,14 +3,14 @@ import sys
 import numpy as np
 import datetime
 
-import nameRideClass as Name_ride
-import profileUpdateClass as Update_profile
-import canvasClass as Canvas
+from nameRideClass import Name_ride
+from profileUpdateClass import Update_profile
+from canvasClass import Canvas
 from constants import *
 
 
 class Main_MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, connection, username, testing):
+    def __init__(self, connection, username):
         super().__init__()
         self.testing = testing
         self.connection = connection

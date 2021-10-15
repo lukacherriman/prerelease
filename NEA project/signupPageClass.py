@@ -3,8 +3,8 @@ import sys
 import sqlite3
 import datetime
 
-import loginPageClass as Login_MainWindow
-import hashingAlgorithm as hashing_algorithm
+from loginPageClass import Login_MainWindow
+from hashingAlgorithm import hashing_algorithm
 
 class Signup_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, connection):
