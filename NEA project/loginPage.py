@@ -96,10 +96,11 @@ class Canvas(FigureCanvas):
 
 
 class Update_profile(QtWidgets.QMainWindow):
-    def __init__(self, connection, username):
+    def __init__(self, connection, username, mainwindow):
         super().__init__()
         self.connection = connection
         self.username = username
+        self.mainwindow = mainwindow
         self.resize(500, 400)
         self.centralwidget = QtWidgets.QWidget(self)
 
@@ -229,11 +230,8 @@ class Update_profile(QtWidgets.QMainWindow):
                 if not testing:
                     self.connection.commit()
 
-                self.app = QtWidgets.QApplication(sys.argv)
-                self.ui = Main_MainWindow(self.connection, self.username)
                 event.accept()
-                self.ui.show()
-                self.app.exec_()
+                self.mainwindow.show()
             except sqlite3.Error:
                 self.error_label.setText("*Error*")
                 event.ignore()
@@ -298,11 +296,8 @@ class Name_ride(QtWidgets.QMainWindow):
                 self.connection.commit()
             self.main_window.more_rides(0)
 
-            self.app = QtWidgets.QApplication(sys.argv)
-            self.ui = Main_MainWindow(self.connection, self.username)
             event.accept()
-            self.ui.show()
-            self.app.exec_()
+            self.main_window.show()
         except sqlite3.Error:
             self.error_label.setText("*Error*")
             event.ignore()
@@ -1357,12 +1352,10 @@ class Main_MainWindow(QtWidgets.QMainWindow):
                 rideId = cursor.fetchall()
                 ride_num = (rideId[0][0])
 
-                self.app = QtWidgets.QApplication(sys.argv)
                 self.ui = Name_ride(self, self.connection, self.username, ride_num)
                 self.new_window = True
-                self.close()
+                self.hide()
                 self.ui.show()
-                self.app.exec_()
 
                 self.connection.execute(f"""CREATE TABLE 'ride{ride_num}' (
                                         'time' INTEGER PRIMARY KEY,
@@ -1422,21 +1415,15 @@ class Main_MainWindow(QtWidgets.QMainWindow):
             self.connection.commit()
 
     def profile_update(self):
-        self.new_window = True
-
-        self.app = QtWidgets.QApplication(sys.argv)
-        self.ui = Update_profile(self.connection, self.username)
-        self.close()
+        self.ui = Update_profile(self.connection, self.username, self)
+        self.hide()
         self.ui.show()
-        self.app.exec_()
 
     def logout(self):
-        self.new_window = True
-        self.app = QtWidgets.QApplication(sys.argv)
-        self.ui = Login_MainWindow(self.connection)
         self.close()
-        self.ui.show()
-        self.app.exec_()
+        if self.new_window:
+            self.ui = Login_MainWindow(self.connection)
+            self.ui.show()
 
     def reset_panel(self):
         # changes the page back to the plain screen
@@ -1485,8 +1472,10 @@ class Main_MainWindow(QtWidgets.QMainWindow):
             dlg = QtWidgets.QMessageBox.warning(self, 'Quit?', 'Are you sure?', QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
             if dlg == QtWidgets.QMessageBox.Ok:
                 event.accept()
+                self.new_window = True
             else:
                 event.ignore()
+                self.new_window = False
 
 
 class Signup_MainWindow(QtWidgets.QMainWindow):
@@ -1628,11 +1617,9 @@ class Signup_MainWindow(QtWidgets.QMainWindow):
             return False
 
     def backToLoginClicked(self):
-        self.app = QtWidgets.QApplication(sys.argv)
         self.ui = Login_MainWindow(self.connection)
         self.close()
         self.ui.show()
-        self.app.exec_()
 
     def signupClicked(self):
         firstName = self.nameFirstLineEdit.text()
@@ -1789,11 +1776,9 @@ class Login_MainWindow(QtWidgets.QMainWindow):
             result = cursor.fetchall()
 
             if result:
-                self.app = QtWidgets.QApplication(sys.argv)
                 self.ui = Main_MainWindow(connection, username)
                 self.close()
                 self.ui.show()
-                self.app.exec_()
             elif username == "" or password == "":
                 self.errorLabel.setText("*Error*")
             else:
@@ -1802,11 +1787,9 @@ class Login_MainWindow(QtWidgets.QMainWindow):
             self.errorLabel.setText("*Error*")
 
     def signUpClicked(self):
-        self.app = QtWidgets.QApplication(sys.argv)
         self.ui = Signup_MainWindow(self.connection)
         self.close()
         self.ui.show()
-        self.app.exec_()
 
 
 if __name__ == "__main__":
