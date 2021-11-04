@@ -8,6 +8,8 @@ def hashing_algorithm(username, password):
     hash_pw = sum(pw_weight) + sum(us_list)
 
 
-    mod_hash = hash_pw % 2 ** 64
+    mod_hash = hash_pw % 2 ** 48
 
     return mod_hash
+
+print(hashing_algorithm("Lcherriman", "Dank385,"))

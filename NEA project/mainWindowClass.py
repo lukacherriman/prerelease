@@ -3,10 +3,10 @@ import sys
 import numpy as np
 import datetime
 
-from nameRideClass import Name_ride
+"""from nameRideClass import Name_ride
 from profileUpdateClass import Update_profile
 from canvasClass import Canvas
-from constants import *
+from constants import *"""
 
 
 class Main_MainWindow(QtWidgets.QMainWindow):

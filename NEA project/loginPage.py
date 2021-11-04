@@ -15,12 +15,11 @@ def hashing_algorithm(username, password):
     us_list = [ord(ch) for ch in username]
     pw_list = [ord(ch) for ch in password]
 
-    pw_weight = [pw_list[i] ** (2*(i+1)) for i in range(len(pw_list))]
-    us_weight = [us_list[i] ** (2*(i+1)) for i in range(len(us_list))]
+    pw_weight = [pw_list[i] ** (2 * (i + 1)) for i in range(len(pw_list))]
+    us_weight = [us_list[i] ** (2 * (i + 1)) for i in range(len(us_list))]
     hash_pw = sum(pw_weight) + sum(us_list)
 
-
-    mod_hash = hash_pw % 2 ** 64
+    mod_hash = hash_pw % 2 ** 48
 
     return mod_hash
 
@@ -1323,6 +1322,11 @@ class Main_MainWindow(QtWidgets.QMainWindow):
         self.update_user_profile.clicked.connect(self.profile_update)
         self.verticalLayout_3.addWidget(self.update_user_profile)
 
+        self.logout_button = QtWidgets.QPushButton()
+        self.logout_button.setText("Logout")
+        self.logout_button.clicked.connect(self.logout)
+        self.verticalLayout_3.addWidget(self.logout_button)
+
     def open_file(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open File", "/PythonFiles", "Ride Files (*.csv)", )
         if filename != "":
@@ -1422,6 +1426,14 @@ class Main_MainWindow(QtWidgets.QMainWindow):
 
         self.app = QtWidgets.QApplication(sys.argv)
         self.ui = Update_profile(self.connection, self.username)
+        self.close()
+        self.ui.show()
+        self.app.exec_()
+
+    def logout(self):
+        self.new_window = True
+        self.app = QtWidgets.QApplication(sys.argv)
+        self.ui = Login_MainWindow(self.connection)
         self.close()
         self.ui.show()
         self.app.exec_()
@@ -1617,7 +1629,7 @@ class Signup_MainWindow(QtWidgets.QMainWindow):
 
     def backToLoginClicked(self):
         self.app = QtWidgets.QApplication(sys.argv)
-        self.ui = Login_MainWindow(connection)
+        self.ui = Login_MainWindow(self.connection)
         self.close()
         self.ui.show()
         self.app.exec_()
@@ -1791,7 +1803,7 @@ class Login_MainWindow(QtWidgets.QMainWindow):
 
     def signUpClicked(self):
         self.app = QtWidgets.QApplication(sys.argv)
-        self.ui = Signup_MainWindow(connection)
+        self.ui = Signup_MainWindow(self.connection)
         self.close()
         self.ui.show()
         self.app.exec_()
